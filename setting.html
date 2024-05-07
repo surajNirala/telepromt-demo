@@ -1,0 +1,304 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">    
+    <style>
+        /* .container {
+            position: relative;
+            width: 50%;
+            height: 200px;
+            overflow: hidden;
+        } */
+        /* .text {
+        position: absolute;
+        top: 50%;
+        right: -100%;
+        transform: translateY(-75%);
+        white-space: nowrap;
+        font-size: 20px;
+        animation: moveRightToLeft 20s linear infinite;
+        } */
+
+        /* @keyframes moveRightToLeft {
+        0% { right: -100%; }
+        100% { right: 100%; }
+        } */
+
+        .highlight {
+            background-color: yellow;
+        }
+
+    </style>
+  </head>
+  <body class="srj-bg-color" id="coloredDiv">
+    <div class="container" id="backgroundcoloredDiv">
+        <div class="row">
+            <div class="col-md-6">
+             <form>
+                 <div class="row">
+                 <div class="mb-3">
+                     <label for="paragraph" class="form-label">Paragraph</label>
+                     <textarea class="form-control" id="paragraph" rows="3">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla </textarea>
+                 </div>
+                 <div class="col-md-3 mb-3">
+                     <label for="colorPicker" class="form-label">Window Background color</label>
+                     <input type="color" class="form-control" id="colorPicker" value="#f8f7f7">
+                 </div>
+                 <div class="col-md-3 mb-3">
+                     <label for="background_color_div" class="form-label">Area Background color</label>
+                     <input type="color" class="form-control" id="background_color_div" value="#e4a5a5">
+                 </div>
+                 <div class="col-md-3 mb-3">
+                     <label for="font_color" class="form-label">Font Color</label>
+                     <input type="color" class="form-control" id="font_color">
+                 </div>
+                 <div class="col-md-3 mb-3">
+                     <label for="font_size" class="form-label">Font Size</label>
+                     <input type="number" class="form-control" id="font_size">
+                 </div>
+                 <div class="col-md-3 mb-3">
+                     <label for="display_screen_words" class="form-label">Display Screen Words</label>
+                     <input type="number" class="form-control" id="display_screen_words" value="5">
+                 </div>
+                 <div class="col-md-3 mb-3">
+                     <label for="highlightfontColor" class="form-label">Highlight Font Color</label>
+                     <input type="color" class="form-control" id="highlightfontColor" value="#ecc609">
+                 </div>
+                 <div class="col-md-3 mb-3">
+                     <label for="speed_time" class="form-label">Speed Time (ms)</label>
+                     <input type="range" class="form-range" min="100" max="2000" value="800" id="speed_time">
+                     <input type="text" class="form-control" id="show_speed_time" value="800">
+                     <input type="hidden" class="form-control" id="word_time_sync" value="4000">
+                 </div>
+                 <button type="submit" class="btn btn-primary" onclick="saveform()">Save</button>
+             </div>
+         </form>
+            </div>
+            <div class="col-md-6">
+             <header class="pb-3 mb-4 border-bottom">
+                 <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
+                     <span class="fs-4">Teleprompt</span>
+                 </a>
+                 <button onclick="readingStart()" class="btn btn-success">Start</button>
+                 <button id="stopButton" class="btn btn-danger">Stop</button>
+                 <a href="index.html" class="btn btn-primary">Dashboard</a>
+                <button onclick="clearLocalStorage()" class="btn btn-success" id="clearStorageBtn">Clear Local Storage</button>
+             </header>
+             <div class="row">
+                 <p id="movingText" class="text"></p>
+             </div>
+            </div>
+         </div>
+    </div>
+    <script>
+        function clearLocalStorage() {
+            localStorage.clear();
+            alert('Local storage has been cleared.');
+            location.reload()
+        }
+        //Window color
+        const colorPicker = document.getElementById("colorPicker");
+        const coloredDiv = document.getElementById('coloredDiv');
+        var colorPickerls = localStorage.getItem('colorPicker');
+        if (colorPickerls) {
+            coloredDiv.style.backgroundColor = colorPickerls;
+        }
+        colorPicker.addEventListener("input", function() {
+            const selectedColor = colorPicker.value;
+            coloredDiv.style.backgroundColor = colorPicker.value;
+            localStorage.setItem('colorPicker', colorPicker.value);
+
+        });
+
+        //Area Section Color change
+        const background_color_div = document.getElementById("background_color_div");
+        const backgroundcoloredDiv = document.getElementById('backgroundcoloredDiv');
+        var background_color_divls = localStorage.getItem('background_color_div');
+        if (background_color_divls) {
+            backgroundcoloredDiv.style.backgroundColor = background_color_divls;
+        }
+        background_color_div.addEventListener("input", function() {
+            const selectedColor = background_color_div.value;
+            backgroundcoloredDiv.style.backgroundColor = background_color_div.value;
+            localStorage.setItem('background_color_div', background_color_div.value);
+        });
+
+        //Font Color Section Color change
+        const font_color = document.getElementById("font_color");
+        const movingText = document.getElementById('movingText');
+        var font_colorls = localStorage.getItem('font_color');
+        if (font_colorls) {
+            movingText.style.color = font_colorls;
+            font_color.value = font_colorls
+        }
+        font_color.addEventListener("input", function() {
+            const selectedColor = font_color.value;
+            movingText.style.color = font_color.value;
+            localStorage.setItem('font_color', font_color.value);
+        });
+
+        //Font size Section size change
+        const font_size = document.getElementById("font_size");
+        const movingText1 = document.getElementById('movingText');
+        var font_sizels = localStorage.getItem('font_size');
+        if (font_sizels) {
+            movingText1.style.fontSize = font_sizels + "px";
+            font_size.value = font_sizels
+        }
+        font_size.addEventListener("keyup", function() {
+            const selectedsize = font_size.value;
+            movingText1.style.fontSize = font_size.value + "px";
+            localStorage.setItem('font_size', font_size.value);
+        });
+        
+        //Display Screen Word Section change
+        const display_screen_words = document.getElementById("display_screen_words");
+        var display_screen_wordsls = localStorage.getItem('display_screen_wordsls');
+        if (display_screen_wordsls) {
+            display_screen_words.value = display_screen_wordsls
+        }
+        display_screen_words.addEventListener("keyup", function() {
+            const selectedwords = display_screen_words.value;
+            localStorage.setItem('display_screen_wordsls', display_screen_words.value);
+        });
+
+        var speed_timels = localStorage.getItem('speed_timels');
+        if (speed_timels) {
+            document.getElementById("show_speed_time").value = speed_timels;
+            var response = correspondingTimeForUser2(speed_timels);
+            document.getElementById("word_time_sync").value = response;
+        }
+
+        const speed_time = document.getElementById("speed_time");
+        speed_time.addEventListener("input", function() {
+            const speed_time_data = speed_time.value;
+            document.getElementById("show_speed_time").value = speed_time_data;
+            localStorage.setItem('speed_timels', speed_time_data);
+            var response = correspondingTimeForUser2(speed_time_data);
+            document.getElementById("word_time_sync").value = response;
+        });
+
+        const speedNumberInput = document.getElementById("show_speed_time");
+        speedNumberInput.addEventListener('input', function() {
+        // Update the value of the range input to match the number input
+        speed_time.value = speedNumberInput.value;
+        localStorage.setItem('speed_timels', speedNumberInput.value);
+        var response = correspondingTimeForUser2(speedNumberInput.value);
+            document.getElementById("word_time_sync").value = response;
+        });
+
+        var paragraphls = localStorage.getItem('paragraphls');
+        if (paragraphls) {
+            document.getElementById("movingText").textContent = paragraphls;
+        }
+
+        // Display Paragraph Data
+        const paragraph = document.getElementById("paragraph");
+        document.getElementById("movingText").textContent = paragraph.textContent;
+        localStorage.setItem('paragraphls', paragraph.value);
+
+        function correspondingTimeForUser2(timeUser1) {
+            const intervalUser1 = 800;
+            const intervalUser2 = 4000;
+
+            // Calculate relative time for user2 with respect to user1
+            const relativeTimeUser2 = intervalUser2 / intervalUser1;
+            return timeUser1 * relativeTimeUser2;
+        }
+        function readingStart(){
+            loadParagraphData()
+            checkdata()
+        }
+        var textElement = document.getElementById("movingText");
+        var words = textElement.innerText.split(' ');
+
+        function loadParagraphData(){
+            const paragraph = document.getElementById("paragraph");
+            textElement.textContent = paragraph.value;
+            localStorage.setItem('paragraphls', paragraph.value);
+            words = textElement.innerText.split(' ');
+        }
+        var highlightfontColor = localStorage.getItem('highlightfontColor');
+        if (highlightfontColor) {
+            document.getElementById("highlightfontColor").value = highlightfontColor
+        } 
+        const stopButton = document.getElementById("stopButton");
+        let stopLoop = false;
+        let currentIndex = 0;
+
+
+        function checkdata(selectedwords=""){
+            // console.log("calling...");
+            var highlight_remove_speed_time = 700
+            var highlight_speed_time = document.getElementById("speed_time").value;
+            var word_time_sync = document.getElementById("word_time_sync").value;
+            if(highlight_speed_time){
+                highlight_speed_time = highlight_speed_time
+            }else{
+                highlight_speed_time = 800
+            }
+            if(word_time_sync){
+                word_time_sync = word_time_sync
+            }else{
+                word_time_sync = 4000
+            }
+            var display_screen_wordsls = localStorage.getItem('display_screen_wordsls');
+            if (display_screen_wordsls) {
+                var showWords = display_screen_wordsls
+            }else{
+                var showWords = document.getElementById("display_screen_words").value;
+            } 
+            // console.log("display_screen_words  ======>>>>", display_screen_words);
+            // var showWords = display_screen_words
+            if(selectedwords){
+                showWords = selectedwords
+            }
+            // var timeFor15Words = 5
+            if(showWords > 5){
+                word_time_sync = (showWords / 5) * word_time_sync;
+            }
+            if (currentIndex >= words.length || stopLoop) {
+                currentIndex = 0; // Reset index when reached end of text or when stopLoop is true
+                stopLoop = false; // Reset stopLoop flag
+                return;
+            }
+            textElement.innerHTML = '';
+            // console.log("timeFor15Words ====>>> ", timeFor15Words);
+            for (let i = 0; i < showWords && currentIndex < words.length; i++) {
+                const span = document.createElement('span');
+                span.textContent = words[currentIndex] + ' ';
+                textElement.appendChild(span);
+                setTimeout(() => {
+                        var highlightfontColor = document.getElementById("highlightfontColor").value;
+                        if(highlightfontColor != ""){
+                                span.style.backgroundColor = highlightfontColor
+                                localStorage.setItem('highlightfontColor', highlightfontColor);
+                        }else{
+                            span.classList.add('highlight');
+                        }
+                        setTimeout(() => {
+                        if(highlightfontColor != ""){
+                            span.style.backgroundColor = ''
+                        }else{
+                            span.classList.remove('highlight');
+                        }
+                    }, highlight_remove_speed_time);
+                }, i * highlight_speed_time);
+
+                currentIndex++;
+
+            }
+            setTimeout(checkdata, word_time_sync);
+        }
+
+        stopButton.addEventListener("click", function() {
+            stopLoop = true; // Set stopLoop flag to true when button is clicked
+        }); 
+
+        
+    </script> 
+  </body>
+</html>
