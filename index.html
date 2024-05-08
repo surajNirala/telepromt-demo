@@ -117,8 +117,12 @@
             var paragraphls = localStorage.getItem('paragraphls');
             if (paragraphls) {
                 textElement.textContent = paragraphls;
+            }else{
+                alert("Please Define your setting in the setting tab.")
+                return
             }
             words = textElement.innerText.split(' ');
+            // console.log("words  =>", words);
         }
 
         var highlightfontColor = localStorage.getItem('highlightfontColor');
@@ -130,11 +134,12 @@
         let currentIndex = 0;
 
 
-        function checkdata(selectedwords=""){
+        function checkdata(){
             // console.log("calling...");
-            var highlight_remove_speed_time = 700
+            // var highlight_remove_speed_time = 700
             var highlight_speed_time = localStorage.getItem('show_speed_time');
             var word_time_sync = localStorage.getItem('word_time_sync');
+            var highlight_remove_speed_time = localStorage.getItem("highlight_remove_speed_time");
             if(highlight_speed_time){
                 highlight_speed_time = highlight_speed_time
             }else{
@@ -145,13 +150,18 @@
             }else{
                 word_time_sync = 4000
             }
+            if(highlight_remove_speed_time){
+                highlight_remove_speed_time = highlight_remove_speed_time
+            }else{
+                highlight_remove_speed_time = 700
+            }
             var display_screen_wordsls = localStorage.getItem('display_screen_wordsls');
             if (display_screen_wordsls) {
                 var showWords = display_screen_wordsls
+            }else{
+                var showWords = 5
             }
-            if(selectedwords){
-                showWords = selectedwords
-            }
+            // https://github.com/surajNirala/telepromt-demo.git
             // var timeFor15Words = 5
             if(showWords > 5){
                 word_time_sync = (showWords / 5) * word_time_sync;
@@ -162,8 +172,9 @@
                 return;
             }
             textElement.innerHTML = '';
-            // console.log("timeFor15Words ====>>> ", timeFor15Words);
+            console.log("timeFor15Words ====>>> ", showWords);
             for (let i = 0; i < showWords && currentIndex < words.length; i++) {
+                console.log("show Owrds");
                 const span = document.createElement('span');
                 span.textContent = words[currentIndex] + ' ';
                 textElement.appendChild(span);
@@ -180,9 +191,12 @@
                         }else{
                             span.classList.remove('highlight');
                         }
-                    }, highlight_remove_speed_time);
+                //     }, 100);
+                // }, i * 200);
+                }, highlight_remove_speed_time);
                 }, i * highlight_speed_time);
-
+                // console.log("highlight_remove_speed_time  ==>>", highlight_remove_speed_time);
+                // console.log("highlight_speed_time  ==>>", highlight_speed_time);
                 currentIndex++;
 
             }

@@ -69,11 +69,11 @@
                  </div>
                  <div class="col-md-3 mb-3">
                      <label for="speed_time" class="form-label">Speed Time (ms)</label>
-                     <input type="range" class="form-range" min="100" max="2000" value="800" id="speed_time">
+                     <input type="range" class="form-range" min="10" max="2000" value="800" id="speed_time">
                      <input type="text" class="form-control" id="show_speed_time" value="800">
                      <input type="hidden" class="form-control" id="word_time_sync" value="4000">
                  </div>
-                 <button type="submit" class="btn btn-primary" onclick="saveform()">Save</button>
+                 <!-- <button type="submit" class="btn btn-primary" onclick="saveform()">Save</button> -->
              </div>
          </form>
             </div>
@@ -179,6 +179,7 @@
             localStorage.setItem('speed_timels', speed_time_data);
             var response = correspondingTimeForUser2(speed_time_data);
             document.getElementById("word_time_sync").value = response;
+            DataHlStore(speed_time_data);
         });
 
         const speedNumberInput = document.getElementById("show_speed_time");
@@ -188,6 +189,7 @@
         localStorage.setItem('speed_timels', speedNumberInput.value);
         var response = correspondingTimeForUser2(speedNumberInput.value);
             document.getElementById("word_time_sync").value = response;
+            DataHlStore(speedNumberInput.value);
         });
 
         var paragraphls = localStorage.getItem('paragraphls');
@@ -208,6 +210,17 @@
             const relativeTimeUser2 = intervalUser2 / intervalUser1;
             return timeUser1 * relativeTimeUser2;
         }
+
+        function DataHlStore(response){
+            // console.log("response ====>>>", response);
+            const intervalUser2 = 700;
+            const intervalUser1 = 800;
+            const relativeTimeUser2 = intervalUser2 / intervalUser1;
+            result = response * relativeTimeUser2;
+            console.log("result  ====>", result);
+            localStorage.setItem('highlight_remove_speed_time', result);
+        }
+
         function readingStart(){
             loadParagraphData()
             checkdata()
@@ -232,9 +245,9 @@
 
         function checkdata(selectedwords=""){
             // console.log("calling...");
-            var highlight_remove_speed_time = 700
             var highlight_speed_time = document.getElementById("speed_time").value;
             var word_time_sync = document.getElementById("word_time_sync").value;
+            var highlight_remove_speed_time = localStorage.getItem("highlight_remove_speed_time");
             if(highlight_speed_time){
                 highlight_speed_time = highlight_speed_time
             }else{
@@ -244,6 +257,11 @@
                 word_time_sync = word_time_sync
             }else{
                 word_time_sync = 4000
+            }
+            if(highlight_remove_speed_time){
+                highlight_remove_speed_time = highlight_remove_speed_time
+            }else{
+                highlight_remove_speed_time = 700
             }
             var display_screen_wordsls = localStorage.getItem('display_screen_wordsls');
             if (display_screen_wordsls) {
@@ -287,10 +305,11 @@
                         }
                     }, highlight_remove_speed_time);
                 }, i * highlight_speed_time);
-
+                console.log("highlight_remove_speed_time  ==>>", highlight_remove_speed_time);
+                console.log("highlight_speed_time  ==>>", highlight_speed_time);
                 currentIndex++;
-
             }
+            // console.log(word_time_sync);
             setTimeout(checkdata, word_time_sync);
         }
 
