@@ -1,8 +1,6 @@
 pipeline {
     agent any
-    enviroment {
-        DOCKER_IMAGE = 'snirala1995/teleprompter'
-    }
+    
     stages {
         stage('Checkout') {
             steps {
