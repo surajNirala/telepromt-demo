@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                ss 'echo "Fetch the code from main branch in github"'
+                sh 'echo "Fetch the code from main branch in github"'
                 checkout([$class: 'GitSCM',
                         branches: [[name: '*/main']], // Specify the branch to checkout
                         userRemoteConfigs: [[url: 'https://github.com/surajNirala/telepromt-demo.git']]]) // Specify your GitHub repository URL
