@@ -17,7 +17,7 @@ pipeline {
                 // This could be any build command like Maven, Gradle, etc.
                 sh 'echo "Building Docker Image!!!"'
                 // Build the Docker image
-                sh 'docker build -t surajnirala/teleprompter .'
+                sh 'docker build -t snirala1995/teleprompter .'
             }
         }
         stage('Test') {
