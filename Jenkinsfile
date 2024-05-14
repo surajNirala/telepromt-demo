@@ -1,10 +1,19 @@
 pipeline {
     agent any
+    // environment {
+    //     DOCKER_IMAGE = 'snirala1995/teleprompter1' // Name for your Docker image
+    //     CONTAINER_NAME = 'srj1' // Name for your Docker container
+    //     HOST_PORT = '8283' // Port on the host machine
+    //     CONTAINER_PORT = '8181' // Port inside the Docker container
+    // }
     environment {
-        DOCKER_IMAGE = 'snirala1995/teleprompter1' // Name for your Docker image
+        DOCKER_IMAGE = 'snirala1995/teleprompter' // Name for your Docker image
         CONTAINER_NAME = 'srj1' // Name for your Docker container
         HOST_PORT = '8283' // Port on the host machine
         CONTAINER_PORT = '8181' // Port inside the Docker container
+        DOCKER_HUB_CREDENTIALS = credentials('5440e9a0-2f5d-4f0b-9fb8-096353218e63')
+        DOCKER_IMAGE_NAME = 'snirala1995/teleprompter'
+        DOCKER_IMAGE_TAG = 'latest'
     }
     
     stages {
@@ -26,8 +35,9 @@ pipeline {
             steps {
                 script {
                     // Build Docker image
-                    sh "echo Build the image ==== ${DOCKER_IMAGE}"
-                    sh "docker build -t ${DOCKER_IMAGE} ."
+                    sh "echo NEW Build the image ==== ${DOCKER_IMAGE}"
+                    // sh "docker build -t ${DOCKER_IMAGE} ."
+                    docker.build("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}")
                 }
             }
         }
