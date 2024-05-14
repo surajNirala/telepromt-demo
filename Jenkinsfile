@@ -14,6 +14,7 @@ pipeline {
                     // Check if the container already exists
                     def existingContainer = sh(script: "docker ps -aqf name=${CONTAINER_NAME}", returnStdout: true).trim()
                     if (existingContainer) {
+                        ss "Remove the existing container ==== ${CONTAINER_NAME}"
                         // Stop and remove the existing container
                         sh "docker rm -f ${CONTAINER_NAME}"
                     }
@@ -25,6 +26,7 @@ pipeline {
             steps {
                 script {
                     // Build Docker image
+                    ss "Build the image ==== ${DOCKER_IMAGE}"
                     sh "docker build -t ${DOCKER_IMAGE} ."
                 }
             }
@@ -34,6 +36,7 @@ pipeline {
             steps {
                 script {
                     // Run Docker container
+                    ss "Run the Image ==== ${CONTAINER_NAME} ${DOCKER_IMAGE}"
                     sh "docker run -d -p ${HOST_PORT}:${CONTAINER_PORT} --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
                 }
             }
