@@ -1,9 +1,9 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE = 'snirala1995/teleprompter' // Name for your Docker image
-        CONTAINER_NAME = 'srj' // Name for your Docker container
-        HOST_PORT = '8282' // Port on the host machine
+        DOCKER_IMAGE = 'snirala1995/teleprompter1' // Name for your Docker image
+        CONTAINER_NAME = 'srj1' // Name for your Docker container
+        HOST_PORT = '8283' // Port on the host machine
         CONTAINER_PORT = '8181' // Port inside the Docker container
     }
     
