@@ -14,6 +14,7 @@ pipeline {
         DOCKER_HUB_CREDENTIALS = credentials('5440e9a0-2f5d-4f0b-9fb8-096353218e63')
         DOCKER_IMAGE_NAME = 'snirala1995/teleprompter'
         DOCKER_IMAGE_TAG = 'latest'
+        DOCKER_HUB_REPO = 'snirala1995/teleprompter'
     }
     
     stages {
@@ -41,6 +42,23 @@ pipeline {
                 }
             }
         }
+        stage('Push Docker Image to Docker Hub') {
+            steps {
+                 script {
+                    // Check if the Docker image already exists on Docker Hub
+                    def imageExists = docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}").exists()
+
+                    // Push the Docker image to Docker Hub if it doesn't already exist
+                    if (!imageExists) {
+                        docker.withRegistry('https://index.docker.io/v1/', ${DOCKER_HUB_CREDENTIALS}) {
+                            docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}").push()
+                        }
+                    } else {
+                        echo "Docker image ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} already exists on Docker Hub"
+                    }
+                }
+            }
+        }
         
         stage('Run Docker Container') {
             steps {
@@ -53,12 +71,12 @@ pipeline {
         }
     }
     
-    // post {
-    //     always {
-    //         // Clean up Docker container
-    //         script {
-    //             sh "docker rm -f ${CONTAINER_NAME} || true"
-    //         }
-    //     }
-    // }
+    post {
+        success {
+            echo "Docker image ${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER} has been successfully pushed to Docker Hub (${DOCKER_HUB_REPO})"
+        }
+        failure {
+            echo "Failed to push Docker image ${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER} to Docker Hub (${DOCKER_HUB_REPO})"
+        }
+    }
 }
