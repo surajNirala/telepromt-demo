@@ -1,6 +1,17 @@
 pipeline {
     agent any
-    
+    // environment {
+    //     DOCKER_IMAGE = 'my-nginx-image'
+    //     DOCKER_CONTAINER = 'my-nginx-container'
+    //     CONTAINER_PORT = sh(script: 'echo $(( ( RANDOM % 1000 )  + 8000 ))', returnStdout: true).trim()
+    //     HOST_PORT = sh(script: 'echo $(( ( RANDOM % 1000 )  + 8000 ))', returnStdout: true).trim()
+    // }
+    environment {
+        DOCKER_IMAGE = 'snirala1995/teleprompter' // Name for your Docker image
+        CONTAINER_NAME = 'srj' // Name for your Docker container
+        HOST_PORT = '8282' // Port on the host machine
+        CONTAINER_PORT = '80' // Port inside the Docker container
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -15,27 +26,17 @@ pipeline {
                 // This could be any build command like Maven, Gradle, etc.
                 sh 'echo "Building Docker Image!!!"'
                 // Build the Docker image
-                sh 'docker build -t snirala1995/teleprompter .'
+                // sh 'docker build -t snirala1995/teleprompter .'
+                sh "docker build -t ${DOCKER_IMAGE} ."
             }
         }
-        stage('Test') {
+        stage('Run Docker Container') {
             steps {
-                // This could be any test command like running unit tests
-                sh 'echo "Testing..."'
+                script {
+                    // Run Docker container
+                    sh "docker run -d -p ${HOST_PORT}:${CONTAINER_PORT} --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
+                }
             }
-        }
-        stage('Deploy') {
-            steps {
-                // This could be any deployment command like deploying to a server
-                sh 'echo "Deploying..."'
-            }
-        }
-    }
-    
-    post {
-        always {
-            // Clean up tasks, e.g., sending notifications, archiving artifacts, etc.
-            echo 'Pipeline finished'
         }
     }
 }
