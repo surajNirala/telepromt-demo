@@ -40,12 +40,12 @@ pipeline {
         }
     }
     
-    post {
-        always {
-            // Clean up Docker container
-            script {
-                sh "docker rm -f ${CONTAINER_NAME} || true"
-            }
-        }
-    }
+    // post {
+    //     always {
+    //         // Clean up Docker container
+    //         script {
+    //             sh "docker rm -f ${CONTAINER_NAME} || true"
+    //         }
+    //     }
+    // }
 }
